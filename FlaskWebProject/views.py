@@ -71,12 +71,11 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            app.logger.warning(
-                "Logging in failed for user:{}".format(form.username.data))
             flash('Invalid username or password')
+            app.logger.error('Invalid input username or password.')
             return redirect(url_for('login'))
-        app.logger.info("Logging in user:{}".format(form.username.data))
         login_user(user, remember=form.remember_me.data)
+        app.logger.info('User are login successfuly.')
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('home')
@@ -92,6 +91,7 @@ def authorized():
     if request.args.get('state') != session.get("state"):
         return redirect(url_for("home"))  # No-OP. Goes back to Index page
     if "error" in request.args:  # Authentication/Authorization failure
+        app.logger.error('Authentication failed.')
         return render_template("auth_error.html", result=request.args)
     if request.args.get('code'):
         cache = _load_cache()
@@ -109,7 +109,8 @@ def authorized():
         user = User.query.filter_by(username="admin").first()
         login_user(user)
         _save_cache(cache)
-        app.logger.info("You are logged in successfully")
+        app.logger.info(
+            "You are logged in successfully with Microsoft Account.'")
     return redirect(url_for('home'))
 
 
@@ -120,6 +121,7 @@ def logout():
         # Wipe out user and its token cache from session
         session.clear()
         # Also logout from your tenant's web session
+        app.logger.info('User are logout.')
         return redirect(
             Config.AUTHORITY + "/oauth2/v2.0/logout" +
             "?post_logout_redirect_uri=" + url_for("login", _external=True))
