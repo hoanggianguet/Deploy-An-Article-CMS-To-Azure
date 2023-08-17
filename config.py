@@ -13,7 +13,7 @@ class Config(object):
 
     SQL_SERVER = os.environ.get(
         'SQL_SERVER') or 'cms-database-server.database.windows.net'
-    SQL_DATABASE = os.environ.get('SQL_DATABASE') or 'cms-db'
+    SQL_DATABASE = os.environ.get('SQL_DATABASE') or 'cms-database'
     SQL_USER_NAME = os.environ.get('SQL_USER_NAME') or 'udacityadmin'
     SQL_PASSWORD = os.environ.get('SQL_PASSWORD') or 'UdacityPassword123'
     # Below URI may need some adjustments for driver version, based on your OS, if running locally
